@@ -35,7 +35,7 @@ def criar_Tabela():
 
     if resultado == 'N':
         cursor.execute(SQL_Criacao_Tabela)
-        #conexao.commit()
+        conexao.commit()
         with open("config/Tabela.txt", "w") as arquivo:
             arquivo.write("S")
     else:
