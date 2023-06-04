@@ -144,7 +144,6 @@ def brasileirao_Serie_B():
             Parte_1 = html.find_all('td',class_="e9fBA xkW0Cc snctkc xL0E7c")
             Parte_2 = html.find_all('td', class_="e9fBA xkW0Cc snctkc kRLtzc xL0E7c")
             for i in range (1):
-                sleep(2)
                 Pontuação = Parte_1[y].get_text()
                 Jogos = Parte_1[y+1].get_text()
                 Vitoria = Parte_1[y+2].get_text()
@@ -153,7 +152,6 @@ def brasileirao_Serie_B():
                 Derrota = Parte_2[y+1].get_text()
                 Gols_Marcado = Parte_2[y+2].get_text()
                 Gols_Contra = Parte_2[y+3].get_text()
-                sleep(2)
                 z = z + 1
                 c = 1
                 ac.Inserirtime(liga,c,Clube,Pontuação,Jogos,Vitoria,Empates,Derrota,Gols_Marcado,Gols_Contra,Saldo_de_Gol)
@@ -162,7 +160,6 @@ def brasileirao_Serie_B():
             Parte_2 = html.find_all('td', class_="e9fBA xkW0Cc snctkc kRLtzc bWoKCf")
             for i in range (1):
                 y = 0
-                sleep(2)
                 Pontuação = Parte_1[y].get_text()
                 Jogos = Parte_1[y+1].get_text()
                 Vitoria = Parte_1[y+2].get_text()
@@ -171,15 +168,6 @@ def brasileirao_Serie_B():
                 Derrota = Parte_2[y+1].get_text()
                 Gols_Marcado = Parte_2[y+2].get_text()
                 Gols_Contra = Parte_2[y+3].get_text()
-                print(Pontuação)
-                print(Jogos)
-                print(Vitoria)
-                print(Empates)
-                print(Derrota)
-                print(Gols_Marcado)
-                print(Gols_Contra)
-                print(Saldo_de_Gol)
-                sleep(2)
                 z = z + 1
                 c = 20
                 print(c)
@@ -189,7 +177,6 @@ def brasileirao_Serie_B():
             Parte_1 = html.find_all('td',class_="e9fBA xkW0Cc snctkc")
             Parte_2 = html.find_all('td', class_="e9fBA xkW0Cc snctkc kRLtzc")
             for i in range (1):
-                sleep(2)
                 Pontuação = Parte_1[y].get_text()
                 Jogos = Parte_1[y+1].get_text()
                 Vitoria = Parte_1[y+2].get_text()
@@ -198,15 +185,6 @@ def brasileirao_Serie_B():
                 Derrota = Parte_2[y+1].get_text()
                 Gols_Marcado = Parte_2[y+2].get_text()
                 Gols_Contra = Parte_2[y+3].get_text()
-                print(Pontuação)
-                print(Jogos)
-                print(Vitoria)
-                print(Empates)
-                print(Derrota)
-                print(Gols_Marcado)
-                print(Gols_Contra)
-                print(Saldo_de_Gol)
-                sleep(2)
                 y = y + 4
                 z = z + 1
                 c = c + 1 
@@ -245,7 +223,6 @@ def Bundesliga():
             Parte_1 = html.find_all('td',class_="e9fBA xkW0Cc snctkc xL0E7c")
             Parte_2 = html.find_all('td', class_="e9fBA xkW0Cc snctkc kRLtzc xL0E7c")
             for i in range (1):
-                sleep(2)
                 Pontuação = Parte_1[y].get_text()
                 Jogos = Parte_1[y+1].get_text()
                 Vitoria = Parte_1[y+2].get_text()
@@ -254,7 +231,6 @@ def Bundesliga():
                 Derrota = Parte_2[y+1].get_text()
                 Gols_Marcado = Parte_2[y+2].get_text()
                 Gols_Contra = Parte_2[y+3].get_text()
-                sleep(2)
                 z = z + 1
                 c = 1
                 ac.Inserirtime(liga,c,Clube,Pontuação,Jogos,Vitoria,Empates,Derrota,Gols_Marcado,Gols_Contra,Saldo_de_Gol)
@@ -263,7 +239,6 @@ def Bundesliga():
             Parte_2 = html.find_all('td', class_="e9fBA xkW0Cc snctkc kRLtzc bWoKCf")
             for i in range (1):
                 y = 0
-                sleep(2)
                 Pontuação = Parte_1[y].get_text()
                 Jogos = Parte_1[y+1].get_text()
                 Vitoria = Parte_1[y+2].get_text()
@@ -272,25 +247,14 @@ def Bundesliga():
                 Derrota = Parte_2[y+1].get_text()
                 Gols_Marcado = Parte_2[y+2].get_text()
                 Gols_Contra = Parte_2[y+3].get_text()
-                print(Pontuação)
-                print(Jogos)
-                print(Vitoria)
-                print(Empates)
-                print(Derrota)
-                print(Gols_Marcado)
-                print(Gols_Contra)
-                print(Saldo_de_Gol)
-                sleep(2)
                 z = z + 1
-                c = 20
-                print(c)
+                c = 18
                 ac.Inserirtime(liga,c,Clube,Pontuação,Jogos,Vitoria,Empates,Derrota,Gols_Marcado,Gols_Contra,Saldo_de_Gol)
                 break
         elif z < 17:
             Parte_1 = html.find_all('td',class_="e9fBA xkW0Cc snctkc")
             Parte_2 = html.find_all('td', class_="e9fBA xkW0Cc snctkc kRLtzc")
             for i in range (1):
-                sleep(2)
                 Pontuação = Parte_1[y].get_text()
                 Jogos = Parte_1[y+1].get_text()
                 Vitoria = Parte_1[y+2].get_text()
@@ -299,19 +263,9 @@ def Bundesliga():
                 Derrota = Parte_2[y+1].get_text()
                 Gols_Marcado = Parte_2[y+2].get_text()
                 Gols_Contra = Parte_2[y+3].get_text()
-                print(Pontuação)
-                print(Jogos)
-                print(Vitoria)
-                print(Empates)
-                print(Derrota)
-                print(Gols_Marcado)
-                print(Gols_Contra)
-                print(Saldo_de_Gol)
-                sleep(2)
                 y = y + 4
                 z = z + 1
                 c = c + 1 
-                print(c)
                 ac.Inserirtime(liga,c,Clube,Pontuação,Jogos,Vitoria,Empates,Derrota,Gols_Marcado,Gols_Contra,Saldo_de_Gol)       
         else:
             print("Tabela Concluida")
