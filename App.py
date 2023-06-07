@@ -10,7 +10,7 @@ navegador = webdriver.Chrome()
 cont_links = 0
 
 Links = [
-    #'https://www.google.com/search?gs_ssp=eJzj4tTP1TcwMcmoyDFg9BJKTswtSM3PSyzJV0grSsxLTi0GAJjzCnk&q=campeonato+frances&oq=campeonato+fran&aqs=chrome.1.0i3i355j46i3j69i57j0i512j46i131i433i512j46i512j0i512j46i512j0i131i433i512j0i512.17117j1j7&sourceid=chrome&ie=UTF-8#sie=lg;/g/11pzkdpbgw;2;/m/044hxl;st;fp;1;;;',
+    #'',
     #'https://www.google.com/search?gs_ssp=eJzj4tDP1Tcwii9JNmD0EkxOzC1Izc9LLMlXyMxLz0ktBgCF6QnL&q=campeonato+ingles&oq=campeonato+ingles&aqs=chrome.1.0i271j46i131i433i512j0i131i433i512j0i433i512l2j0i512j46i512j0i512l3.10730j1j7&sourceid=chrome&ie=UTF-8#sie=lg;/g/11pz7zbpnb;2;/m/02_tc;st;fp;1;;;',
     #'https://www.google.com/search?gs_ssp=eJzj4tDP1TewTC-sMGD0Ek5OzC1Izc9LLMlXSC0uSMzLyM8BAJ4wCsY&q=campeonato+espanhol&oq=Campeonato+Espo&aqs=chrome.3.69i57j0i512l2j46i10i131i433i512j0i512j0i10i131i433i512j46i10i131i433i512j0i10i131i433i512l3.7383j1j7&sourceid=chrome&ie=UTF-8#sie=lg;/g/11sqj24s0_;2;/m/09gqx;st;fp;1;;;',
     #'https://www.google.com/search?q=campeonato+italiano&oq=Campeonato+Ita&aqs=chrome.0.0i131i355i433i512j46i131i433i512j0i131i433i512j46i131i433i512j0i433i512j0i131i433i512j69i57j46i512l3.7406j1j9&sourceid=chrome&ie=UTF-8#cobssid=s&sie=lg;/g/11sqvtnwvb;2;/m/03zv9;st;fp;1;;;',
