@@ -11,6 +11,13 @@ def conexao_Com_Banco():
                 password=os.getenv('pass_DB'))
     return conexao
 
+def close_connection(conn,cursor):
+    
+    cursor.close()
+    conn.close()
+
+    return
+
 def criar_Tabela():
     conexao = conexao_Com_Banco()
 
@@ -51,3 +58,47 @@ def Inserirtime(liga,colocacao,clube,pts,pj,vit,empate,der,gm,gc,sg):
     cur.execute(sql)
     con.commit()
     print ("Conclusion")
+
+def fetch_id_country(cursor,name):
+
+    sql = f"""select id from futebol.country c where "name" = '{name}'"""
+    cursor.execute(sql)
+
+    result = cursor.fetchall()
+    
+    id_country = result[0][0]
+
+    return id_country
+
+def insert_league(conn, cursor, id, name, type, logo, id_country):
+
+    sql = f"""select * from futebol.league l where id = '{id}'"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+
+        id_country = fetch_id_country(cursor,id_country)
+
+        insert = """INSERT INTO futebol.league (id, "name", "type", logo, id_country) VALUES(%s, %s, %s, %s, %s);"""
+        cursor.execute(insert,(id,name,type,logo,id_country))
+        conn.commit()
+    else:
+        pass
+    
+    return
+
+def insert_country(conn,cursor,name, code, flag):
+
+    sql = f"""select * from futebol.country c where "name" = '{name}'"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        insert = """INSERT INTO futebol.country ("name", code, flag) VALUES(%s, %s, %s);"""
+        cursor.execute(insert,(name, code, flag))
+        conn.commit()
+    else:
+        pass
+
+    return 

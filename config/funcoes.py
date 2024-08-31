@@ -1,8 +1,10 @@
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 import requests
-from selenium import webdriver
+#from selenium import webdriver
 from time import sleep
 import bd as ac
+
+import api_sports as asp
 
 
 def buscar_HTML(Link):
@@ -710,4 +712,33 @@ def brasileirao_Serie_A_JOGOS():
 
     return print('Brasileirao concluido...')
 
-brasileirao_Serie_A_JOGOS()
+#api_sports
+
+def league_treatment():
+
+    conn = ac.conexao_Com_Banco()
+
+    cursor = conn.cursor()
+
+    leagues = asp.search_leagues()
+    
+    leagues = leagues["response"]
+
+    for league in leagues:
+        dic_league = league["league"]
+        id_league = dic_league["id"]
+        name_league = dic_league["name"]
+        tipy_league = dic_league["type"]
+        logo_league = dic_league["logo"]
+
+        dic_country = league["country"]
+        name_country = dic_country["name"]
+        code_country = dic_country["code"]
+        flag_country = dic_country["flag"]
+        
+        ac.insert_country(conn,cursor,name_country,code_country,flag_country)
+        ac.insert_league(conn,cursor,id_league,name_league,tipy_league,logo_league,name_country)
+    
+    ac.close_connection(conn,cursor)
+
+    return
