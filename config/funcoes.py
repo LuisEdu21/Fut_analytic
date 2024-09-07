@@ -742,3 +742,45 @@ def league_treatment():
     ac.close_connection(conn,cursor)
 
     return
+
+def teams_stadium_tratamento():
+
+    conn = ac.conexao_Com_Banco()
+
+    cursor = conn.cursor()
+
+    teams_stadium = asp.teams_leagues(140,2024)
+    
+    teams_stadium = teams_stadium["response"]
+
+    for i in teams_stadium:
+
+        team = i["team"]
+
+        id_team = team["id"]
+        name_team = team["name"]
+        code_team = team["code"]
+        country = team["country"]
+        founded_team = team["founded"]
+        national_team = team["national"]
+        logo_team = team["logo"]
+
+        ac.insert_team(conn,cursor,id_team, name_team, code_team,country,founded_team,national_team,logo_team)
+
+        stadium = i["venue"]
+
+        id_stadium = stadium["id"]
+        name_stadium = stadium["name"]
+        address_stadium = stadium["address"]
+        city_stadium = stadium["city"]
+        capacity_stadium = stadium["capacity"]
+        surface_stadium = stadium["surface"]
+        image_stadium = stadium["image"]
+
+        ac.insert_stadium(conn,cursor,id_stadium, name_stadium, address_stadium, city_stadium, country, capacity_stadium, surface_stadium, image_stadium,id_team)
+
+    ac.close_connection(conn,cursor)
+
+    return
+
+teams_stadium_tratamento()

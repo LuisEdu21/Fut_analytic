@@ -102,3 +102,33 @@ def insert_country(conn,cursor,name, code, flag):
         pass
 
     return 
+
+def insert_team(conn,cursor,id, name, code,country,founded,national,logo):
+
+    sql = f"""select * from futebol.team t where id = '{id}'"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        insert = """INSERT INTO futebol.team (id, "name", code, country, founded, "national", logo) VALUES(%s, %s, %s, %s, %s, %s, %s);"""
+        cursor.execute(insert,(id, name, code,country,founded,national,logo))
+        conn.commit()
+    else:
+        pass
+
+    return 
+
+def insert_stadium(conn,cursor,id, name, address, city, country, capacity, surface, image, id_team):
+
+    sql = f"""select * from futebol.stadium s where id = '{id}'"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        insert = """INSERT INTO futebol.stadium (id, "name", address, city, country, capacity, surface, image, id_team) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+        cursor.execute(insert,(id, name, address, city, country, capacity, surface, image, id_team))
+        conn.commit()
+    else:
+        pass
+
+    return 
