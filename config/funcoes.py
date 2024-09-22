@@ -7,6 +7,7 @@ import api_sports as asp
 from datetime import datetime
 import asyncio
 import mensageiro
+from time import sleep
 
 #api_sports
 
@@ -181,32 +182,39 @@ def predictions():
 
         prediction = asp.predictions(game[0])
 
-        response = prediction['response'][0]
+        try:
+            response = prediction['response'][0]
 
-        prediction_result = response["predictions"]
-        winner = prediction_result["winner"]
-        winner_id = winner['id']
-        winner_comment = winner['comment']
-        win_or_draw = prediction_result["win_or_draw"]
-        under_over = prediction_result["under_over"]
-        goals = prediction_result["goals"]
-        goals_home = goals["home"]
-        goals_away = goals["away"]
-        advice = prediction_result["advice"]
-        percent = prediction_result["percent"]
-        percent_home = percent["home"]
-        percent_draw = percent["draw"]
-        percent_away = percent["away"]
+            prediction_result = response["predictions"]
+            winner = prediction_result["winner"]
+            winner_id = winner['id']
+            winner_comment = winner['comment']
+            win_or_draw = prediction_result["win_or_draw"]
+            under_over = prediction_result["under_over"]
+            goals = prediction_result["goals"]
+            goals_home = goals["home"]
+            goals_away = goals["away"]
+            advice = prediction_result["advice"]
+            percent = prediction_result["percent"]
+            percent_home = percent["home"]
+            percent_draw = percent["draw"]
+            percent_away = percent["away"]
 
-        league = response["league"]
-        id_league = league["id"]
-        
-        message = f"""O jogo {game[1]} X {game[2]} Horario {game[3]}:\n\n (comentário: {winner_comment}). Projeção de gols: Casa: {goals_home}. Visitante: {goals_away}. Recomendação: {advice}."""
-                    
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(mensageiro.enviar_mensagem(message))
+            league = response["league"]
+            id_league = league["id"]
+            
+            message = f"""O jogo {game[1]} X {game[2]}\n Horario {game[3]}:\n\n (comentário: {winner_comment}). Projeção de gols: Casa: {goals_home}. Visitante: {goals_away}. Recomendação: {advice}."""
+                        
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(mensageiro.enviar_mensagem(message))
 
-        ac.inset_predictions(conn,cursor,game[0],winner_id,winner_comment,win_or_draw,under_over,goals_home,goals_away,advice,percent_home,percent_draw,percent_away,id_league)
+            ac.inset_predictions(conn,cursor,game[0],winner_id,winner_comment,win_or_draw,under_over,goals_home,goals_away,advice,percent_home,percent_draw,percent_away,id_league)
+            sleep(3)
+
+        except:
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(mensageiro.enviar_mensagem(f'Deu erro na previsão do jogo: {game[0]}'))
+            sleep(3)
 
     ac.close_connection(conn,cursor)
 

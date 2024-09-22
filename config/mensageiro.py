@@ -1,8 +1,10 @@
 import os 
 import telegram
 import requests
+from time import sleep
 
 async def enviar_mensagem(text):
+    sleep(3)
     chat_id = os.getenv('id_chat')
     mensagem = text
 
