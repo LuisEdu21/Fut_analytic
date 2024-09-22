@@ -47,3 +47,31 @@ def league_table(league,season):
   response = requests.request("GET", url, headers=headers, data=payload)
 
   return response.json()
+
+def play_date(date,league,season):
+
+  url = f"https://v3.football.api-sports.io/fixtures?date={date}&league={league}&season={season}&timezone=America/Fortaleza"
+
+  payload = {}
+  headers = {
+    'x-rapidapi-host': 'v3.football.api-sports.io',
+    'x-rapidapi-key': os.getenv('token_api_sports')
+  }
+
+  response = requests.request("GET", url, headers=headers, data=payload)
+
+  return response.json()
+
+def predictions(id_jogo):
+
+  url = f"https://v3.football.api-sports.io/predictions?fixture={id_jogo}"
+
+  payload = {}
+  headers = {
+    'x-rapidapi-host': 'v3.football.api-sports.io',
+    'x-rapidapi-key': os.getenv('token_api_sports')
+  }
+
+  response = requests.request("GET", url, headers=headers, data=payload)
+
+  return response.json()

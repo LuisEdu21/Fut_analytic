@@ -97,29 +97,22 @@ def insert_stadium(conn,cursor,id, name, address, city, country, capacity, surfa
 
 def search_leagues(cursor):
 
-    sql = f"""SELECT id
-            FROM (
-                SELECT 
-                    l.*, 
-                    ROW_NUMBER() OVER (PARTITION BY l.id_country ORDER BY l.id) AS rn
-                FROM 
-                    futebol.league l
-            ) subquery
-            WHERE rn = 1 and id_country <> 1
-            ORDER BY id_country, id
-            limit 85;"""
+    sql = f"""select l.id from futebol.league l 
+            left join futebol.country c on l.id_country = c.id
+            where "type" = 'League' and c.id <> '1' and l.id in ('61','71','39','78','135','89','94','140')
+            order by l.id;"""
     cursor.execute(sql)
 
     result = cursor.fetchall()
     
     return result
 
-def search_leagues_table(cursor):
+def search_for_games_of_the_day(cursor):
 
-    sql = f"""select l.id from futebol.league l 
-            left join futebol.country c on l.id_country = c.id
-            where "type" = 'League' and c.id <> '1' and l.id in ('61','71','39','78','135','89','94','140')
-            order by l.id;"""
+    sql = f"""select g.id, t.name, t2."name" from futebol.game g 
+            left join futebol.team t on g.id_team_home = t.id 
+            left join futebol.team t2 on g.id_team_away = t2.id 
+            where date::date = current_date and t.name is not null;"""
     cursor.execute(sql)
 
     result = cursor.fetchall()
@@ -143,6 +136,42 @@ def insert_table(conn,cursor,id_league,rank,id_team,point,goalsdiff,form,status,
         cursor.execute(update,(id_team,point,goalsdiff,form,status,description,played,win,draw,lose,gf,ga,id_league,rank,season))
         conn.commit()
 
+        pass
+
+    return
+
+def insert_game(conn,cursor,id,date,id_venue,id_league,season,round,id_team_home,id_team_away,goals_home,goals_away):
+   
+    sql = f"""select * from futebol.game g where id = '{id}';"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        insert = """INSERT INTO futebol.game (id, "date", id_venue, id_league, season, round, id_team_home, id_team_away, goals_home, goals_away)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+        cursor.execute(insert,(id,date, id_venue, id_league, season, round, id_team_home, id_team_away, goals_home, goals_away))
+        conn.commit()
+    else:
+        update = """UPDATE futebol.game SET goals_home=%s, goals_away=%s where id=%s"""
+        cursor.execute(update,(goals_home, goals_away, id))
+        conn.commit()
+
+        pass
+
+    return
+
+def inset_predictions(conn,cursor,id_game,winner_id,winner_comment,win_or_draw,under_over,goals_home,goals_away,advice,percent_home,percent_draw,percent_away,id_league):
+
+    sql = f"""select * from futebol.predictions p where id_game = '{id_game}';"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        insert = """INSERT INTO futebol.predictions (id_game, winner_id, winner_comment, win_or_draw, under_over, goals_home, goals_away, advice, percent_home, percent_draw, percent_away, id_league)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+        cursor.execute(insert,(id_game,winner_id,winner_comment,win_or_draw,under_over,goals_home,goals_away,advice,percent_home,percent_draw,percent_away,id_league))
+        conn.commit()
+    else:
         pass
 
     return

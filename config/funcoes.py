@@ -4,6 +4,9 @@ import requests
 from time import sleep
 import bd as ac
 import api_sports as asp
+from datetime import datetime
+import asyncio
+import mensageiro
 
 #api_sports
 
@@ -86,7 +89,7 @@ def treatment_table():
 
     cursor = conn.cursor()
 
-    leagues = ac.search_leagues_table(cursor)
+    leagues = ac.search_leagues(cursor)
 
     for league in leagues:
 
@@ -120,5 +123,95 @@ def treatment_table():
             ga = goals["against"]
 
             ac.insert_table(conn,cursor,id_league,rank_team,id_team,points,goalsDiff,form,status,description,played,win,draw,lose,gf,ga,season)
+
+    return
+
+def game_of_the_day():
+
+    conn = ac.connection_with_bank()
+
+    cursor = conn.cursor()
+
+    leagues = ac.search_leagues(cursor)
+
+    data_formatada = datetime.now().strftime("%Y-%m-%d")
+
+    for league in leagues:
+
+        game_day = asp.play_date(data_formatada,league[0],2024)
+
+        response = game_day["response"]
+
+        for game in response:
+            fixture = game["fixture"]
+            id_game = fixture["id"]
+            date = fixture["date"]
+            venue = fixture["venue"]
+            id_venue = venue["id"]
+            league_game = game["league"]
+            id_league = league_game["id"]
+            season = league_game["season"]
+            round = league_game["round"]
+            teams = game["teams"]
+            home = teams["home"]
+            id_team_home = home["id"]
+            away = teams["away"]
+            id_team_away = away["id"]
+            goals = game["goals"]
+            goals_home = goals["home"]
+            goals_away = goals["away"]
+
+            ac.insert_game(conn,cursor,id_game,date,id_venue,id_league,season,round,id_team_home,id_team_away,goals_home,goals_away)
+
+    return
+
+def predictions():
+
+    conn = ac.connection_with_bank()
+
+    cursor = conn.cursor()
+
+    games = ac.search_for_games_of_the_day(cursor)
+    
+    for game in games:
+
+        prediction = asp.predictions(game[0])
+
+        response = prediction['response'][0]
+
+        prediction_result = response["predictions"]
+        winner = prediction_result["winner"]
+        winner_id = winner['id']
+        winner_comment = winner['comment']
+        win_or_draw = prediction_result["win_or_draw"]
+        under_over = prediction_result["under_over"]
+        goals = prediction_result["goals"]
+        goals_home = goals["home"]
+        goals_away = goals["away"]
+        advice = prediction_result["advice"]
+        percent = prediction_result["percent"]
+        percent_home = percent["home"]
+        percent_draw = percent["draw"]
+        percent_away = percent["away"]
+
+        league = response["league"]
+        id_league = league["id"]
+        
+        message = f"""O jogo {game[1]} X {game[2]}:\n
+- O provável vencedor é {winner['name']} (comentário: {winner_comment}).
+- A previsão para vitória ou empate está {win_or_draw}.
+- Projeção de gols:
+    - Casa: {goals_home}.
+    - Visitante: {goals_away}.
+- Recomendação: {advice}.
+- Probabilidades:
+    - Vitória do time da casa: {percent_home}.
+    - Empate: {percent_draw}.
+    - Vitória do visitante: {percent_away}."""
+                    
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(mensageiro.enviar_mensagem(message))
+
+        ac.inset_predictions(conn,cursor,game[0],winner_id,winner_comment,win_or_draw,under_over,goals_home,goals_away,advice,percent_home,percent_draw,percent_away,id_league)
 
     return
