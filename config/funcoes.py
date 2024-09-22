@@ -124,6 +124,8 @@ def treatment_table():
 
             ac.insert_table(conn,cursor,id_league,rank_team,id_team,points,goalsDiff,form,status,description,played,win,draw,lose,gf,ga,season)
 
+    ac.close_connection(conn,cursor)
+
     return
 
 def game_of_the_day():
@@ -163,6 +165,8 @@ def game_of_the_day():
 
             ac.insert_game(conn,cursor,id_game,date,id_venue,id_league,season,round,id_team_home,id_team_away,goals_home,goals_away)
 
+    ac.close_connection(conn,cursor)
+
     return
 
 def predictions():
@@ -197,21 +201,30 @@ def predictions():
         league = response["league"]
         id_league = league["id"]
         
-        message = f"""O jogo {game[1]} X {game[2]}:\n
-- O provável vencedor é {winner['name']} (comentário: {winner_comment}).
-- A previsão para vitória ou empate está {win_or_draw}.
-- Projeção de gols:
-    - Casa: {goals_home}.
-    - Visitante: {goals_away}.
-- Recomendação: {advice}.
-- Probabilidades:
-    - Vitória do time da casa: {percent_home}.
-    - Empate: {percent_draw}.
-    - Vitória do visitante: {percent_away}."""
+        message = f"""O jogo {game[1]} X {game[2]} Horario {game[3]}:\n\n (comentário: {winner_comment}). Projeção de gols: Casa: {goals_home}. Visitante: {goals_away}. Recomendação: {advice}."""
                     
         loop = asyncio.get_event_loop()
         loop.run_until_complete(mensageiro.enviar_mensagem(message))
 
         ac.inset_predictions(conn,cursor,game[0],winner_id,winner_comment,win_or_draw,under_over,goals_home,goals_away,advice,percent_home,percent_draw,percent_away,id_league)
+
+    ac.close_connection(conn,cursor)
+
+    return
+
+def run():
+
+    with open("config/Tabela.txt", "r") as arquivo:
+        resultado = arquivo.read()
+    
+    if resultado == 'N': #configuração incial
+        ac.create_table()
+        league_treatment()
+        teams_stadium_treatment()
+    
+    else: #Atualização_normal 
+        treatment_table()
+        game_of_the_day()
+        predictions()
 
     return

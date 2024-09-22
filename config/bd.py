@@ -99,7 +99,7 @@ def search_leagues(cursor):
 
     sql = f"""select l.id from futebol.league l 
             left join futebol.country c on l.id_country = c.id
-            where "type" = 'League' and c.id <> '1' and l.id in ('61','71','39','78','135','89','94','140')
+            where "type" = 'League' and c.id <> '1' and l.id in ('39','61','71','72','78','88','94','135','140')
             order by l.id;"""
     cursor.execute(sql)
 
@@ -109,10 +109,11 @@ def search_leagues(cursor):
 
 def search_for_games_of_the_day(cursor):
 
-    sql = f"""select g.id, t.name, t2."name" from futebol.game g 
+    sql = f"""select g.id, t.name, t2."name", to_char(g."date",'HH:mi') from futebol.game g 
             left join futebol.team t on g.id_team_home = t.id 
             left join futebol.team t2 on g.id_team_away = t2.id 
-            where date::date = current_date and t.name is not null;"""
+            where date::date = current_date and t.name is not null
+           order by g."date" asc;"""
     cursor.execute(sql)
 
     result = cursor.fetchall()
@@ -176,34 +177,112 @@ def inset_predictions(conn,cursor,id_game,winner_id,winner_comment,win_or_draw,u
 
     return
 
-def criar_Tabela():
-    conexao = connection_with_bank()
+def create_table():
 
-    SQL_Criacao_Tabela = """CREATE TABLE public.tabela_fut (
-	liga varchar NULL,
-	colocacao int4 NULL,
-	clube varchar NULL,
-	pts int4 NULL,
-	pj int4 NULL,
-	vit int4 NULL,
-	e int4 NULL,
-	der int4 NULL,
-	gm int4 NULL,
-	gc int4 NULL,
-	sg int4 NULL,
-	datahora timestamp NULL)"""
+    connection = connection_with_bank()
+
+    sql = [
+    """CREATE SCHEMA futebol AUTHORIZATION postgres;""",
+    """CREATE TABLE country (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(10) NOT NULL,
+    flag VARCHAR(255));""",
+    """CREATE TABLE league (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(50),
+    logo VARCHAR(255),
+    id_country INT,
+    FOREIGN KEY (id_country) REFERENCES country(id));""",
+    """CREATE TABLE team (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    code VARCHAR(10) NOT NULL,
+    id_country INT,
+    founded YEAR,
+    national BOOLEAN,
+    logo VARCHAR(255),
+    FOREIGN KEY (id_country) REFERENCES country(id));""",
+    """CREATE TABLE stadium (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255),
+    city VARCHAR(255),
+    country INT,
+    capacity INT,
+    surface VARCHAR(50),
+    image VARCHAR(255),
+    id_team INT,
+    FOREIGN KEY (id_team) REFERENCES team(id),
+    FOREIGN KEY (country) REFERENCES country(id));""",
+    """CREATE TABLE game (
+    id SERIAL PRIMARY KEY,
+    date DATE NOT NULL,
+    id_venue INT,
+    id_league INT,
+    season VARCHAR(10),
+    round INT,
+    id_team_home INT,
+    id_team_away INT,
+    goals_home INT,
+    goals_away INT,
+    FOREIGN KEY (id_venue) REFERENCES stadium(id),
+    FOREIGN KEY (id_league) REFERENCES league(id),
+    FOREIGN KEY (id_team_home) REFERENCES team(id),
+    FOREIGN KEY (id_team_away) REFERENCES team(id));""",
+    """CREATE TABLE table_leagues (
+    id_league INT,
+    id_team INT,
+    rank INT,
+    point INT,
+    goalsdiff INT,
+    form VARCHAR(255),
+    status VARCHAR(50),
+    description TEXT,
+    played INT,
+    win INT,
+    draw INT,
+    lose INT,
+    gf INT,
+    ga INT,
+    season VARCHAR(10),
+    PRIMARY KEY (id_league, id_team),
+    FOREIGN KEY (id_league) REFERENCES league(id),
+    FOREIGN KEY (id_team) REFERENCES team(id));""",
+    """CREATE TABLE predictions (
+    id_game INT,
+    winner_id INT,
+    winner_comment TEXT,
+    win_or_draw BOOLEAN,
+    under_over BOOLEAN,
+    goals_home INT,
+    goals_away INT,
+    advice TEXT,
+    percent_home DECIMAL(5, 2),
+    percent_draw DECIMAL(5, 2),
+    percent_away DECIMAL(5, 2),
+    id_league INT,
+    green BOOLEAN,
+    PRIMARY KEY (id_game),
+    FOREIGN KEY (id_game) REFERENCES game(id),
+    FOREIGN KEY (id_league) REFERENCES league(id));"""
+    ]
     
-    cursor = conexao.cursor()
+    cursor = connection.cursor()
 
     with open("config/Tabela.txt", "r") as arquivo:
         resultado = arquivo.read()
 
     if resultado == 'N':
-        cursor.execute(SQL_Criacao_Tabela)
-        conexao.commit()
+        for consulta in sql:
+            cursor.execute(consulta)
+            connection.commit()
         with open("config/Tabela.txt", "w") as arquivo:
             arquivo.write("S")
     else:
         print('Tabela já existe')
+
+    close_connection(connection,cursor)
 
     return print('Finalizado processo...')
