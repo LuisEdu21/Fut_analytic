@@ -46,7 +46,7 @@ def teams_stadium_treatment():
 
     cursor = conn.cursor()
 
-    leagues = ac.search_leagues(cursor)
+    leagues = ac.search_leagues_team(cursor)
 
     for league in leagues:
 
@@ -140,31 +140,86 @@ def game_of_the_day():
     data_formatada = datetime.now().strftime("%Y-%m-%d")
 
     for league in leagues:
-
+        
+        sleep(3)
         game_day = asp.play_date(data_formatada,league[0],2024)
 
         response = game_day["response"]
 
-        for game in response:
-            fixture = game["fixture"]
-            id_game = fixture["id"]
-            date = fixture["date"]
-            venue = fixture["venue"]
-            id_venue = venue["id"]
-            league_game = game["league"]
-            id_league = league_game["id"]
-            season = league_game["season"]
-            round = league_game["round"]
-            teams = game["teams"]
-            home = teams["home"]
-            id_team_home = home["id"]
-            away = teams["away"]
-            id_team_away = away["id"]
-            goals = game["goals"]
-            goals_home = goals["home"]
-            goals_away = goals["away"]
+        if len(response) == 0:
+            sleep(3)
+            pass
+        
+        else:
+            for game in response:
+                fixture = game["fixture"]
+                id_game = fixture["id"]
+                date = fixture["date"]
+                venue = fixture["venue"]
+                id_venue = venue["id"]
+                league_game = game["league"]
+                id_league = league_game["id"]
+                season = league_game["season"]
+                round = league_game["round"]
+                teams = game["teams"]
+                home = teams["home"]
+                id_team_home = home["id"]
+                away = teams["away"]
+                id_team_away = away["id"]
+                goals = game["goals"]
+                goals_home = goals["home"]
+                goals_away = goals["away"]
 
-            ac.insert_game(conn,cursor,id_game,date,id_venue,id_league,season,round,id_team_home,id_team_away,goals_home,goals_away)
+                ac.insert_game(conn,cursor,id_game,date,id_venue,id_league,season,round,id_team_home,id_team_away,goals_home,goals_away)
+                sleep(3)
+
+    ac.close_connection(conn,cursor)
+
+    return
+
+def game_of_the_day_cup():
+
+    conn = ac.connection_with_bank()
+
+    cursor = conn.cursor()
+
+    leagues = ac.search_cup(cursor)
+
+    data_formatada = datetime.now().strftime("%Y-%m-%d")
+
+    for league in leagues:
+        
+        sleep(3)
+        game_day = asp.play_date(data_formatada,league[0],2024)
+
+        response = game_day["response"]
+
+        if len(response) == 0:
+            sleep(3)
+            pass
+        
+        else:
+            for game in response:
+                fixture = game["fixture"]
+                id_game = fixture["id"]
+                date = fixture["date"]
+                venue = fixture["venue"]
+                id_venue = venue["id"]
+                league_game = game["league"]
+                id_league = league_game["id"]
+                season = league_game["season"]
+                round = league_game["round"]
+                teams = game["teams"]
+                home = teams["home"]
+                id_team_home = home["id"]
+                away = teams["away"]
+                id_team_away = away["id"]
+                goals = game["goals"]
+                goals_home = goals["home"]
+                goals_away = goals["away"]
+
+                ac.insert_game(conn,cursor,id_game,date,id_venue,id_league,season,round,id_team_home,id_team_away,goals_home,goals_away)
+                sleep(3)
 
     ac.close_connection(conn,cursor)
 
@@ -233,6 +288,7 @@ def run():
     else: #Atualização_normal 
         treatment_table()
         game_of_the_day()
+        game_of_the_day_cup()
         predictions()
 
     return

@@ -107,6 +107,30 @@ def search_leagues(cursor):
     
     return result
 
+def search_leagues_team(cursor):
+
+    sql = f"""select l.id from futebol.league l 
+            left join futebol.country c on l.id_country = c.id
+            where l.id in ('2','3','11','13','45','48')
+            order by l.id;"""
+    cursor.execute(sql)
+
+    result = cursor.fetchall()
+    
+    return result
+
+def search_cup(cursor):
+
+    sql = f"""select l.id, l."name" from futebol.league l 
+            left join futebol.country c on l.id_country = c.id
+            where "type" = 'Cup' and l.id in ('2','3','11','13','45','48')
+            order by l.id;"""
+    cursor.execute(sql)
+
+    result = cursor.fetchall()
+    
+    return result
+
 def search_for_games_of_the_day(cursor):
 
     sql = f"""select g.id, t.name, t2."name", to_char(g."date",'HH:mi') from futebol.game g 
