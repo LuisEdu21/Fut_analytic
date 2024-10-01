@@ -109,7 +109,7 @@ def search_leagues(cursor):
 
 def search_leagues_team(cursor):
 
-    sql = f"""select l.id from futebol.league l 
+    sql = f"""select l.id, l."type" from futebol.league l 
             left join futebol.country c on l.id_country = c.id
             where l.id in ('2','3','11','13','39','45','48','61','71','72','78','88','94','135','140')
             order by l.id;"""

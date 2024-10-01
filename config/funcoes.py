@@ -50,7 +50,7 @@ def teams_stadium_treatment():
 
     for league in leagues:
 
-        teams_stadium = asp.teams_leagues(league[0],2024)
+        teams_stadium = asp.teams_leagues(league[0],league[1],2024)
         
         teams_stadium = teams_stadium["response"]
 

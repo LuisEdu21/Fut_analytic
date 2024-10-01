@@ -18,9 +18,13 @@ def search_leagues():
 
   return response.json()
 
-def teams_leagues(league,season):
+def teams_leagues(league,type,season):
 
-  url = f"https://v3.football.api-sports.io/teams?league={league}&season={season}"
+  if type == 'Cup':
+    url = f"https://v3.football.api-sports.io/teams?cup={league}&season={season}"
+
+  else:
+    url = f"https://v3.football.api-sports.io/teams?league={league}&season={season}"
 
   payload = {}
   headers = {
