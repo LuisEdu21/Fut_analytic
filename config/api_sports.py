@@ -16,8 +16,6 @@ def search_leagues():
 
   response = requests.request("GET", url, headers=headers, data=payload)
 
-  print(response.text)
-
   return response.json()
 
 def teams_leagues(league,season):

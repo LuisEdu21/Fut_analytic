@@ -284,6 +284,10 @@ def run():
         ac.create_table()
         league_treatment()
         teams_stadium_treatment()
+        treatment_table()
+        game_of_the_day()
+        game_of_the_day_cup()
+        predictions()
     
     else: #Atualização_normal 
         treatment_table()

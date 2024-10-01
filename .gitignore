@@ -6,4 +6,4 @@ teste.py
 .vscode
 App.py
 main_teste.py
-Tabela.txt
+./config/Tabela.txt
