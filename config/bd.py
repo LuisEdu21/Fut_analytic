@@ -109,7 +109,7 @@ def search_leagues(cursor):
 
 def search_leagues_team(cursor):
 
-    sql = f"""select l.id, l."type" from futebol.league l 
+    sql = f"""select l.id from futebol.league l 
             left join futebol.country c on l.id_country = c.id
             where l.id in ('2','3','11','13','39','45','48','61','71','72','78','88','94','135','140')
             order by l.id;"""
@@ -211,9 +211,9 @@ def create_table():
     """CREATE TABLE futebol.league (id SERIAL PRIMARY KEY,name VARCHAR(255) NOT NULL,type VARCHAR(50),logo VARCHAR(255),id_country INT,FOREIGN KEY (id_country) REFERENCES futebol.country(id));""",
     """CREATE TABLE futebol.team (id SERIAL PRIMARY KEY,name VARCHAR(255) NOT NULL,code VARCHAR(10),country VARCHAR(50), founded INT,national BOOLEAN,logo VARCHAR(255));""",
     """CREATE TABLE futebol.stadium (id SERIAL PRIMARY KEY,name VARCHAR(255) NOT NULL,address VARCHAR(255),city VARCHAR(255),country VARCHAR(50),capacity INT,surface VARCHAR(50),image VARCHAR(255),id_team INT,FOREIGN KEY (id_team) REFERENCES futebol.team(id));""",
-    """CREATE TABLE futebol.game (id SERIAL PRIMARY KEY,date DATE NOT NULL,id_venue INT,id_league INT,season VARCHAR(10),round VARCHAR(255),id_team_home INT,id_team_away INT,goals_home INT,goals_away INT,FOREIGN KEY (id_venue) REFERENCES futebol.stadium(id),FOREIGN KEY (id_league) REFERENCES futebol.league(id),FOREIGN KEY (id_team_home) REFERENCES futebol.team(id),FOREIGN KEY (id_team_away) REFERENCES futebol.team(id));""",
+    """CREATE TABLE futebol.game (id SERIAL PRIMARY KEY,date DATE NOT NULL,id_venue INT,id_league INT,season VARCHAR(10),round VARCHAR(255),id_team_home INT,id_team_away INT,goals_home INT,goals_away INT,FOREIGN KEY (id_league) REFERENCES futebol.league(id),FOREIGN KEY (id_team_home) REFERENCES futebol.team(id),FOREIGN KEY (id_team_away) REFERENCES futebol.team(id));""",
     """CREATE TABLE futebol.table_leagues (id_league INT,id_team INT,rank INT,point INT,goalsdiff INT,form VARCHAR(255),status VARCHAR(50),description TEXT,played INT,win INT,draw INT,lose INT,gf INT,ga INT,season INT,PRIMARY KEY (id_league, id_team),FOREIGN KEY (id_league) REFERENCES futebol.league(id),FOREIGN KEY (id_team) REFERENCES futebol.team(id));""",
-    """CREATE TABLE futebol.predictions (id_game INT,winner_id INT,winner_comment TEXT,win_or_draw BOOLEAN,under_over BOOLEAN,goals_home INT,goals_away INT,advice TEXT,percent_home DECIMAL(5, 2),percent_draw DECIMAL(5, 2),percent_away DECIMAL(5, 2),id_league INT,green BOOLEAN,PRIMARY KEY (id_game),FOREIGN KEY (id_game) REFERENCES futebol.game(id),FOREIGN KEY (id_league) REFERENCES futebol.league(id));"""
+    """CREATE TABLE futebol.predictions (id_game INT,winner_id INT,winner_comment TEXT,win_or_draw BOOLEAN,under_over INT,goals_home INT,goals_away INT,advice TEXT,percent_home DECIMAL(5, 2),percent_draw DECIMAL(5, 2),percent_away DECIMAL(5, 2),id_league INT,green BOOLEAN,PRIMARY KEY (id_game),FOREIGN KEY (id_game) REFERENCES futebol.game(id),FOREIGN KEY (id_league) REFERENCES futebol.league(id));"""
     ]
     
     cursor = connection.cursor()

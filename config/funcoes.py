@@ -8,6 +8,7 @@ from datetime import datetime
 import asyncio
 import mensageiro
 from time import sleep
+import traceback
 
 #api_sports
 
@@ -50,7 +51,7 @@ def teams_stadium_treatment():
 
     for league in leagues:
 
-        teams_stadium = asp.teams_leagues(league[0],league[1],2024)
+        teams_stadium = asp.teams_leagues(league[0],2024)
         
         teams_stadium = teams_stadium["response"]
 
@@ -267,6 +268,12 @@ def predictions():
             sleep(3)
 
         except:
+
+            with open("log_de_erros.txt", "a") as log_file:
+                log_file.write("Ocorreu um erro:\n")
+                log_file.write(traceback.format_exc())  # Isso grava a mensagem completa do erro no arquivo
+                log_file.write("\n-------------------------\n")  # Separador para facilitar a leitura
+
             loop = asyncio.get_event_loop()
             loop.run_until_complete(mensageiro.enviar_mensagem(f'Deu erro na previsão do jogo: {game[0]}'))
             sleep(3)
