@@ -21,6 +21,7 @@ while True:
             elif agora.hour == 23 and agora.minute == 30:
                 loop.run_until_complete(mensageiro.enviar_mensagem("Atualizando resultado dos jogos!"))
                 cf.game_of_the_day()
+                cf.statistics()
                   
         else:
             if agora.hour == 5 and agora.minute == 0:

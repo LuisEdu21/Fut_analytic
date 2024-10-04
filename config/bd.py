@@ -1,6 +1,8 @@
 import psycopg2 as pg
 import os 
 from dotenv import load_dotenv
+import pytz
+from datetime import datetime
 
 load_dotenv()
 
@@ -133,10 +135,16 @@ def search_cup(cursor):
 
 def search_for_games_of_the_day(cursor):
 
+    brasilia_tz = pytz.timezone('America/Sao_Paulo')
+
+    agora_brasilia = datetime.now(brasilia_tz)
+
+    data_brasilia = agora_brasilia.strftime('%Y-%m-%d')
+
     sql = f"""select g.id, t.name, t2."name", to_char(g."date",'HH:mi') from futebol.game g 
             left join futebol.team t on g.id_team_home = t.id 
             left join futebol.team t2 on g.id_team_away = t2.id 
-            where date::date = current_date and t.name is not null
+            WHERE g.date::date = '{data_brasilia}' and t.name is not null
            order by g."date" asc;"""
     cursor.execute(sql)
 
@@ -201,6 +209,22 @@ def inset_predictions(conn,cursor,id_game,winner_id,winner_comment,win_or_draw,u
 
     return
 
+def inset_statistics(conn,cursor,id_game,id_team,shots_on_goal,shots_off_goal,total_shots,ball_possession,yellow_cards,red_cards,blocked_shots,shots_insidebox,shots_outsidebox,fouls,corner_kicks,offsides,goalkeeper_saves,total_passes,passes_accurate,passes_por,expected_goals,goals_prevented):
+
+    sql = f"""select * from futebol."statistics" s where id_game = '{id_game}' and id_team = '{id_team}';"""
+    cursor.execute(sql)
+    result = cursor.fetchall()
+
+    if len(result) == 0:
+        insert = """INSERT INTO futebol."statistics" (id_game, id_team, shots_on_goal, shots_off_goal, total_shots, blocked_shots, shots_insidebox, shots_outsidebox, fouls, corner_kicks, offsides, ball_possession, yellow_cards, red_cards, goalkeeper_saves, total_passes, passes_accurate, passes_por, expected_goals, goals_prevented)
+                    VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+        cursor.execute(insert,(id_game, id_team, shots_on_goal, shots_off_goal, total_shots, blocked_shots, shots_insidebox, shots_outsidebox, fouls, corner_kicks, offsides, ball_possession, yellow_cards, red_cards, goalkeeper_saves, total_passes, passes_accurate, passes_por, expected_goals, goals_prevented))
+        conn.commit()
+    else:
+        pass
+
+    return
+
 def create_table():
 
     connection = connection_with_bank()
@@ -214,6 +238,7 @@ def create_table():
     """CREATE TABLE futebol.game (id SERIAL PRIMARY KEY,date DATE NOT NULL,id_venue INT,id_league INT,season VARCHAR(10),round VARCHAR(255),id_team_home INT,id_team_away INT,goals_home INT,goals_away INT,FOREIGN KEY (id_league) REFERENCES futebol.league(id),FOREIGN KEY (id_team_home) REFERENCES futebol.team(id),FOREIGN KEY (id_team_away) REFERENCES futebol.team(id));""",
     """CREATE TABLE futebol.table_leagues (id_league INT,id_team INT,rank INT,point INT,goalsdiff INT,form VARCHAR(255),status VARCHAR(50),description TEXT,played INT,win INT,draw INT,lose INT,gf INT,ga INT,season INT,PRIMARY KEY (id_league, id_team),FOREIGN KEY (id_league) REFERENCES futebol.league(id),FOREIGN KEY (id_team) REFERENCES futebol.team(id));""",
     """CREATE TABLE futebol.predictions (id_game INT,winner_id INT,winner_comment TEXT,win_or_draw BOOLEAN,under_over INT,goals_home INT,goals_away INT,advice TEXT,percent_home DECIMAL(5, 2),percent_draw DECIMAL(5, 2),percent_away DECIMAL(5, 2),id_league INT,green BOOLEAN,PRIMARY KEY (id_game),FOREIGN KEY (id_game) REFERENCES futebol.game(id),FOREIGN KEY (id_league) REFERENCES futebol.league(id));"""
+    """CREATE TABLE futebol."statistics" (id_game int4 NULL,id_team varchar NULL,shots_on_goal int4 NULL,shots_off_goal int4 NULL,total_shots int4 NULL,blocked_shots int4 NULL,shots_insidebox int4 NULL,shots_outsidebox int4 NULL,fouls int4 NULL,corner_kicks int4 NULL,offsides int4 NULL,ball_possession varchar NULL,yellow_cards int4 NULL,red_cards int4 NULL,goalkeeper_saves int4 NULL,total_passes int4 NULL,passes_accurate int4 NULL,passes_por varchar NULL,expected_goals varchar NULL,goals_prevented int4 NULL,PRIMARY KEY (id_game, id_team) FOREIGN KEY (id_game) REFERENCES futebol.game(id),FOREIGN KEY (id_team) REFERENCES futebol.team(id));"""
     ]
     
     cursor = connection.cursor()

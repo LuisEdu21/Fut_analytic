@@ -282,6 +282,64 @@ def predictions():
 
     return
 
+def statistics():
+
+    conn = ac.connection_with_bank()
+
+    cursor = conn.cursor()
+
+    games = ac.search_for_games_of_the_day(cursor)
+
+    for game in games:
+        
+        statistic = asp.statistics(game[0])
+
+        responses = statistic['response']
+
+        try:
+            for response in responses:
+                team = response["team"]
+                id_team = team["id"]
+
+                # Dicionário para mapear o tipo com a variável correspondente
+                stats = {}
+
+                # Iterar sobre as estatísticas e armazenar em dicionário
+                for stat in response["statistics"]:
+                    stat_type = stat['type'].replace(" ", "_").lower()  # Normalizando o nome da chave
+                    stats[stat_type] = stat['value']
+
+                # Acessando os valores individualmente (se necessário, você pode enviar para o banco de dados agora)
+                shots_on_goal = stats.get('shots_on_goal', 0)
+                shots_off_goal = stats.get('shots_off_goal', 0)
+                total_shots = stats.get('total_shots', 0)
+                ball_possession = stats.get('ball_possession', "0%")
+                yellow_cards = stats.get('yellow_cards', 0)
+                red_cards = stats.get('red_cards', 0)
+                blocked_shots = stats.get('blocked_shots', 0) 
+                shots_insidebox = stats.get('shots_insidebox', 0)
+                shots_outsidebox = stats.get('shots_outsidebox', 0) 
+                fouls = stats.get('fouls', 0) 
+                corner_kicks = stats.get('corner_kicks', 0)
+                offsides = stats.get('offsides', 0)
+                goalkeeper_saves = stats.get('goalkeeper_saves', 0) 
+                total_passes = stats.get('total_passes', 0) 
+                passes_accurate = stats.get('total_passes', 0) 
+                passes_por = stats.get('passes_%', "0%") 
+                expected_goals  = stats.get('expected_goals', "0")
+                goals_prevented = stats.get('goals_prevented', 0) 
+
+                ac.inset_statistics(conn,cursor,game[0],id_team,shots_on_goal,shots_off_goal,total_shots,ball_possession,yellow_cards,red_cards,blocked_shots,shots_insidebox,shots_outsidebox,fouls,corner_kicks,offsides,goalkeeper_saves,total_passes,passes_accurate,passes_por,expected_goals,goals_prevented)
+
+        except:
+             with open("log_de_erros.txt", "a") as log_file:
+                log_file.write("Ocorreu um erro:\n")
+                log_file.write(traceback.format_exc())  # Isso grava a mensagem completa do erro no arquivo
+                log_file.write("\n-------------------------\n")  # Separador para facilitar a leitura
+
+
+    return
+
 def run():
 
     with open("config/Tabela.txt", "r") as arquivo:

@@ -73,3 +73,17 @@ def predictions(id_jogo):
   response = requests.request("GET", url, headers=headers, data=payload)
 
   return response.json()
+
+def statistics(id_jogo):
+
+  url = f"https://v3.football.api-sports.io/fixtures/statistics?fixture={id_jogo}"
+
+  payload = {}
+  headers = {
+    'x-rapidapi-host': 'v3.football.api-sports.io',
+    'x-rapidapi-key': os.getenv('token_api_sports')
+  }
+
+  response = requests.request("GET", url, headers=headers, data=payload)
+
+  return response.json()
