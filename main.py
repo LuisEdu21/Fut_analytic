@@ -1,6 +1,6 @@
 import sys
 sys.path.append("config")
-import funcoes as cf
+import functions_Soccer as cf
 import bd as cd
 import datetime
 import asyncio

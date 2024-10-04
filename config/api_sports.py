@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# football functions
+
 def search_leagues():
 
   url = "https://v3.football.api-sports.io/leagues"
@@ -81,6 +83,50 @@ def statistics(id_jogo):
   payload = {}
   headers = {
     'x-rapidapi-host': 'v3.football.api-sports.io',
+    'x-rapidapi-key': os.getenv('token_api_sports')
+  }
+
+  response = requests.request("GET", url, headers=headers, data=payload)
+
+  return response.json()
+
+# NBA functions
+
+def nba_seasons():
+
+  url = "https://v2.nba.api-sports.io/seasons"
+
+  payload = {}
+  headers = {
+    'x-rapidapi-host': 'v2.nba.api-sports.io',
+    'x-rapidapi-key': os.getenv('token_api_sports')
+  }
+
+  response = requests.request("GET", url, headers=headers, data=payload)
+
+  return response.json()
+
+def nba_leagues():
+
+  url = "https://v2.nba.api-sports.io/leagues"
+
+  payload = {}
+  headers = {
+    'x-rapidapi-host': 'v2.nba.api-sports.io',
+    'x-rapidapi-key': os.getenv('token_api_sports')
+  }
+
+  response = requests.request("GET", url, headers=headers, data=payload)
+
+  return response.json()
+
+def nba_games(season):
+
+  url = f"https://v2.nba.api-sports.io/games?season={season}"
+
+  payload = {}
+  headers = {
+    'x-rapidapi-host': 'v2.nba.api-sports.io',
     'x-rapidapi-key': os.getenv('token_api_sports')
   }
 

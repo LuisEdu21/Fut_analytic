@@ -342,7 +342,7 @@ def statistics():
 
 def run():
 
-    with open("config/Tabela.txt", "r") as arquivo:
+    with open("config/Table_exists.txt", "r") as arquivo:
         resultado = arquivo.read()
     
     if resultado == 'N': #configuração incial
