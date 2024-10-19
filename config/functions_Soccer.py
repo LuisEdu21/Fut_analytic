@@ -33,6 +33,12 @@ def league_treatment():
         name_country = dic_country["name"]
         code_country = dic_country["code"]
         flag_country = dic_country["flag"]
+
+        dic_seasons = league["seasons"]
+
+        for season in dic_seasons:
+            season_year = season["year"]
+            ac.insert_season(conn,cursor,id_league,season_year)
         
         ac.insert_country(conn,cursor,name_country,code_country,flag_country)
         ac.insert_league(conn,cursor,id_league,name_league,tipy_league,logo_league,name_country)
@@ -51,7 +57,7 @@ def teams_stadium_treatment():
 
     for league in leagues:
 
-        teams_stadium = asp.teams_leagues(league[0],2024)
+        teams_stadium = asp.teams_leagues(league[0],league[1])
         
         teams_stadium = teams_stadium["response"]
 
@@ -95,7 +101,7 @@ def treatment_table():
 
     for league in leagues:
 
-        table = asp.league_table(league[0],2024)
+        table = asp.league_table(league[0],league[1])
 
         response = table["response"][0]
 
@@ -143,7 +149,7 @@ def game_of_the_day():
     for league in leagues:
         
         sleep(3)
-        game_day = asp.play_date(data_formatada,league[0],2024)
+        game_day = asp.play_date(data_formatada,league[0],league[1])
 
         response = game_day["response"]
 
@@ -189,7 +195,7 @@ def game_of_the_season():
     for league in leagues:
         
         sleep(3)
-        game_day = asp.play_season(league[0],2024)
+        game_day = asp.play_season(league[0],league[1])
 
         response = game_day["response"]
 
@@ -237,7 +243,7 @@ def game_of_the_day_cup():
     for league in leagues:
         
         sleep(3)
-        game_day = asp.play_date(data_formatada,league[0],2024)
+        game_day = asp.play_date(data_formatada,league[0],league[1])
 
         response = game_day["response"]
 
