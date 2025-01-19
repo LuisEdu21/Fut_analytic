@@ -36,12 +36,12 @@ def league_treatment():
 
         dic_seasons = league["seasons"]
 
+        ac.insert_country(conn,cursor,name_country,code_country,flag_country)
+        ac.insert_league(conn,cursor,id_league,name_league,tipy_league,logo_league,name_country)
+
         for season in dic_seasons:
             season_year = season["year"]
             ac.insert_season(conn,cursor,id_league,season_year)
-        
-        ac.insert_country(conn,cursor,name_country,code_country,flag_country)
-        ac.insert_league(conn,cursor,id_league,name_league,tipy_league,logo_league,name_country)
     
     ac.close_connection(conn,cursor)
 
