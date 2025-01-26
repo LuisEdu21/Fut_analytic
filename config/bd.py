@@ -90,7 +90,7 @@ def search_leagues_team(cursor):
             LEFT JOIN futebol.season_league sl ON l.id = sl.id_league
             WHERE l.id IN ('2','3','11','13','39','45','48','61','71','72','78','88','94','135','140')
             GROUP BY l.id
-            ORDER BY l.id;"""
+            ORDER BY l.id desc;"""
     cursor.execute(sql)
 
     result = cursor.fetchall()
@@ -196,6 +196,14 @@ def insert_table(conn,cursor,id_league,rank,id_team,point,goalsdiff,form,status,
         conn.commit()
 
         pass
+
+    return
+
+def delete_table(conn,cursor,id_league,season):
+
+    sql = f"""delete from futebol.table_leagues where id_league = '{id_league}' and season = '{season}'"""
+    cursor.execute(sql)
+    conn.commit()
 
     return
 

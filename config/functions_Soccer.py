@@ -112,6 +112,8 @@ def treatment_table():
 
         standings = league_response["standings"][0]
 
+        ac.delete_table(conn,cursor,id_league,season)
+
         for rank in standings:
             rank_team = rank["rank"]
             team = rank["team"]

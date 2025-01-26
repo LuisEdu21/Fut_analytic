@@ -6,6 +6,7 @@ import datetime
 import asyncio
 import mensageiro
 import traceback
+import os
 
 loop = asyncio.get_event_loop()
 
@@ -29,11 +30,28 @@ while True:
                 cf.run()
 
     except Exception as err:
-        with open("log_de_erros.txt", "a") as log_file:
-            log_file.write("Ocorreu um erro:\n")
-            log_file.write(traceback.format_exc())  # Isso grava a mensagem completa do erro no arquivo
+        # Diretório onde os logs serão salvos
+        pasta_log = "log"
+        os.makedirs(pasta_log, exist_ok=True)  # Cria a pasta se não existir
+
+        # Nome do arquivo de log com a data atual
+        data_atual = datetime.datetime.now().strftime("%Y-%m-%d")
+        nome_arquivo = f"log_de_erros_{data_atual}.txt"
+
+        # Caminho completo do arquivo de log
+        caminho_arquivo = os.path.join(pasta_log, nome_arquivo)
+
+        # Escreve o erro no arquivo de log
+        with open(caminho_arquivo, "a") as log_file:
+            # Horário atual para registrar o momento do erro
+            horario_atual = datetime.datetime.now().strftime("%H:%M:%S")
+            log_file.write(f"Horário: {horario_atual}\n")
+            log_file.write("Erro ocorrido:\n")
+            log_file.write(traceback.format_exc())  # Registra o rastreamento do erro
             log_file.write("\n-------------------------\n")  # Separador para facilitar a leitura
 
+        
         agora = datetime.datetime.now()
-        loop.run_until_complete(mensageiro.enviar_mensagem(f'Erro no BotBet, horario do erro: {agora}'))
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(mensageiro.enviar_mensagem(f'Erro no analise_esportiva: {agora}'))
         pass
