@@ -71,7 +71,7 @@ def search_for_games_of_the_day(cursor):
 
     data_brasilia = agora_brasilia.strftime('%Y-%m-%d')
 
-    sql = f"""select g.id, t.name, t2."name", to_char(g."date",'HH:mi') from futebol.game g 
+    sql = f"""select g.id, t.name, t2."name" from futebol.game g 
             left join futebol.team t on g.id_team_home = t.id 
             left join futebol.team t2 on g.id_team_away = t2.id 
             WHERE g.date::date = '{data_brasilia}' and t.name is not null

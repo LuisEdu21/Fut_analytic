@@ -314,7 +314,7 @@ def predictions():
             league = response["league"]
             id_league = league["id"]
             
-            message = f"""O jogo {game[1]} X {game[2]}\n Horario {game[3]}:\n\n (comentário: {winner_comment}). Projeção de gols: Casa: {goals_home}. Visitante: {goals_away}. Recomendação: {advice}."""
+            message = f"""O jogo {game[1]} X {game[2]}\n\n (comentário: {winner_comment}). Projeção de gols: Casa: {goals_home}. Visitante: {goals_away}. Recomendação: {advice}."""
                         
             loop = asyncio.get_event_loop()
             loop.run_until_complete(mensageiro.enviar_mensagem(message))
